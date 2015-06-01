@@ -28,9 +28,7 @@ class ChurchAccount(models.Model):
 
 
 class AccountedManager(models.Manager):
-    def get_queryset(self):
-        return super(AccountedManager, self).get_queryset().filter(church_account=self.request.user.church_account)
-
+    pass
 
 class AccountedModel(models.Model):
     church_account = models.ForeignKey(ChurchAccount)
@@ -113,6 +111,10 @@ class UserProfile(AccountedModel):
 
     #TODO: Spouse - Foreign Key
     #TODO: Children - ManyToManyField or Foreing Key in a ChildrenObject
+
+    class Meta:
+        verbose_name = _("Person")
+        verbose_name_plural = _("People")
 
 class MemberFunction(AccountedModel):
 
