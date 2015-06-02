@@ -17,14 +17,15 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
-from dashboard_view.views import LoginView, DashboardOverviewView, DashboardProfileView, LogoutView
+from dashboard_view.views import LoginView, LogoutView
 import main
+from main.views import PetrosDashboardOverviewView, PetrosDashboardProfileView
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
 
-    url(r'^dashboard/$', DashboardOverviewView.as_view(), name="dashboard_overview"),
-    url(r'^dashboard/profile/$', DashboardProfileView.as_view(), name="dashboard_profile"),
+    url(r'^dashboard/$', PetrosDashboardOverviewView.as_view(), name="dashboard_overview"),
+    url(r'^dashboard/profile/$', PetrosDashboardProfileView.as_view(), name="dashboard_profile"),
 
     url(r'^login$', LoginView.as_view(), name='login'),
     url(r'^logout$', LogoutView.as_view(), name='logout'),

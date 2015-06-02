@@ -4,8 +4,8 @@ from django.core.urlresolvers import reverse_lazy, reverse
 from django.http.response import HttpResponseRedirect
 from django.utils.translation import gettext as _
 from dashboard_view.views import DashboardView, DashboardMenu, DashboardCreateView, DashboardUpdateView, \
-    DashboardListView, DashboardDetailView
-from main.forms import PersonForm_User, PersonForm_Personal, PersonForm_Contact, PersonForm
+    DashboardListView, DashboardDetailView, DashboardOverviewView, DashboardProfileView
+from main.forms import PersonForm_User, PersonForm_Personal, PersonForm_Contact, PersonForm, UserForm
 from main.models import UserProfile
 
 menu_dict = [
@@ -18,6 +18,12 @@ menu_dict = [
 
 ]
 DashboardView.menu = DashboardMenu(menu=menu_dict)
+
+class PetrosDashboardOverviewView(DashboardOverviewView):
+    template_name = "dashboard_base.html"
+
+class PetrosDashboardProfileView(DashboardProfileView):
+    template_name = "dashboard_base.html"
 
 
 class DashboardAccountedListView(DashboardListView):
@@ -42,7 +48,7 @@ class PersonCreateView(DashboardCreateView):
         self.object = None
 
         form = self.get_form()
-        form_user = UserCreationForm(request.POST)
+        form_user = UserForm(request.POST)
         form_basic = PersonForm_User(request.POST)
         form_personal = PersonForm_Personal(request.POST)
         form_contact = PersonForm_Contact(request.POST)
@@ -82,7 +88,7 @@ class PersonCreateView(DashboardCreateView):
         context = super(PersonCreateView, self).get_context_data(**kwargs)
 
         context['form_basic'] = PersonForm_User() if not 'form_user' in kwargs else kwargs['form_basic']
-        context['form_user'] = UserCreationForm() if not 'form_user' in kwargs else kwargs['form_user']
+        context['form_user'] = UserForm() if not 'form_user' in kwargs else kwargs['form_user']
         context['form_personal'] = PersonForm_Personal() if not 'form_personal' in kwargs else kwargs['form_personal']
         context['form_contact'] = PersonForm_Contact() if not 'form_contact' in kwargs else kwargs['form_contact']
 
