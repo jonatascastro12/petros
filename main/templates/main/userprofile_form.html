@@ -1,0 +1,60 @@
+{% extends "generics/dashboard_form.html" %}
+{% load i18n %}
+{% load bootstrap_form %}
+{% load staticfiles %}
+
+{% block form %}
+    {% if form_basic.errors or form_user.errors or form_personal.errors or form_contact.errors %}
+        <div class="alert alert-danger alert-dismissible" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          Existem alguns campos que são obrigatórios. <br>Verifique as abas marcas com <span class="fa fa-exclamation-triangle"></span>
+        </div>
+    {% endif %}
+
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#user" aria-controls="user" role="tab" data-toggle="tab">
+            {% trans 'User' %} {% if form_basic.errors or form_user.errors %}<span class="text-danger fa fa-exclamation-triangle"></span>{% endif %}
+        </a></li>
+        <li role="presentation"><a href="#personal" aria-controls="personal" role="tab" data-toggle="tab">
+            {% trans 'Personal' %} {% if form_personal.errors %}<span class="text-danger fa fa-exclamation-triangle"></span>{% endif %}
+        </a></li>
+        <li role="presentation"><a href="#contact" aria-controls="contact" role="tab" data-toggle="tab">
+            {% trans 'Contact' %}  {% if form_contact.errors %}<span class="text-danger fa fa-exclamation-triangle"></span>{% endif %}
+        </a></li>
+    </ul>
+    <form class="form-horizontal" method="POST" enctype="multipart/form-data">
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="user">
+                <div class="panel-body">
+                        {% csrf_token %}
+                        {{ form_basic|as_bootstrap}}
+                        {{ form_user|as_bootstrap}}
+                        {% buttons %}
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="personal">
+                 <div class="panel-body">
+                        {% csrf_token %}
+                        {{ form_personal|as_bootstrap}}
+                        {% buttons %}
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="contact">
+                 <div role="tabpanel" class="tab-pane" id="personal">
+                     <div class="panel-body">
+                            {% csrf_token %}
+                            {{ form_contact|as_bootstrap}}
+                            {% buttons %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block extra_footer_scripts %}
+    {{ form_user.media }}
+    {{ form_contact.media }}
+    {{ form_personal.media }}
+{% endblock %}

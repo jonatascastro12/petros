@@ -23,6 +23,9 @@ class ChurchAccount(models.Model):
 
     user_admin = models.ForeignKey(User, related_name="church_user_admin")
 
+    def __unicode__(self):
+        return self.name
+
     class Meta:
         verbose_name = _("Church Account")
 
@@ -74,7 +77,7 @@ class Church(AccountedModel):
 class UserProfile(AccountedModel):
     user = models.OneToOneField(User)
 
-    photo = CropImageModelField(upload_to='user_photos')
+    photo = CropImageModelField(upload_to='user_photos', blank=True, null=True)
 
     type = models.CharField(max_length=100, choices=(
         #translation: Gathered: Congregado
@@ -85,14 +88,14 @@ class UserProfile(AccountedModel):
     cpf = models.CharField(max_length=14, verbose_name='CPF')
     rg = models.CharField(max_length=14, blank=True, null=True, verbose_name='RG')
 
-    birth_date = models.DateField(verbose_name='Data de Nascimento')
+    birth_date = models.DateField(verbose_name=_('Birth Date'))
     gender = models.CharField(max_length='1', verbose_name=_('Gender'), choices=[('M', _('Male')), ('F', _('Female'))])
     blood_type = models.CharField(max_length='2', blank=True, null=True, verbose_name=_('Blood Type'), choices=[('A+', 'A+'), ('A-', 'A-'), ('B+', 'B+'), ('B-','B-'), ('O+', 'O+'), ('O-', 'O-')])
 
     address_line = models.CharField(blank=True, max_length='300', verbose_name=_('Address'), validators=[RegexValidator(u'^[\'a-zA-ZáàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ0-9,\.\s]+$', _(u'Special char not permitted.'))])
     neighborhood = models.CharField(blank=True, max_length='200', verbose_name=_('Neighborhood'), validators=[RegexValidator(u'^[\'a-zA-Z0-9áàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ\s]+$', _(u'Special char not permitted.'))])
     city = models.CharField(blank=True, max_length='200', verbose_name=_('City'), validators=[RegexValidator(u'^[\'a-zA-ZáàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ0-9\s]+$', _(u'Special char not permitted.'))])
-    state = BRStateField()
+    state = BRStateField(blank=True, null=True)
     zipcode = models.CharField(blank=True, null=True, max_length='10', )
     phone1 = models.CharField(blank=True, max_length='15', verbose_name='Telefone 1',)
     phone2 = models.CharField(blank=True, max_length='15', verbose_name='Telefone 2',)
@@ -107,10 +110,16 @@ class UserProfile(AccountedModel):
     has_child = models.CharField(blank=True, null=True, max_length='1', verbose_name=_('Has Child?'), choices=[('Y', _('Yes')), ('N', _('No'))])
     how_many_child = models.PositiveSmallIntegerField(default=0)
 
-    discipler = models.ForeignKey(User, related_name=_("discipler_user"))
+    discipler = models.ForeignKey('self', related_name=_("discipler_user"), null=True, blank=True, verbose_name=_("Discipler"))
 
     #TODO: Spouse - Foreign Key
     #TODO: Children - ManyToManyField or Foreing Key in a ChildrenObject
+
+    def __unicode__(self):
+        return self.user.get_full_name()
+
+    def get_absolute_url(self):
+        return reverse('main_person_detail', kwargs={'pk': self.pk})
 
     class Meta:
         verbose_name = _("Person")

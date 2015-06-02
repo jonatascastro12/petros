@@ -37,11 +37,14 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'datatableview',
     'bootstrap_form',
     'dashboard_view',
     'crop_image',
     'main',
     'sorl.thumbnail',
+    'input_mask',
+    'bootstrap3_datetime'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -110,6 +113,8 @@ LOGIN_URL = '/login'
 STATIC_URL = '/static/'
 
 MEDIA_URL = '/uploaded/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploaded_files')
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
