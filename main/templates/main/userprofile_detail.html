@@ -1,0 +1,62 @@
+{% extends 'generics/dashboard_detail.html' %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block detail %}
+    <div class="panel panel-default">
+      <div class="panel-heading">{% trans 'Personal information' %}</div>
+      <div class="panel-body">
+          <div class="row">
+              <div class="col-xs-6 col-md-3">
+                <a href="#" class="thumbnail">
+                  <img data-src="holder.js/100%x180" src="{{ object.get_thumbnail }}" alt="...">
+                </a>
+              </div>
+              <div class="col-xs-6 col-md-9">
+                  <h2>{{object.user.get_full_name}} <br/><small>{{ object.get_type_display }}</small></h2>
+                  {% trans 'CPF' %}:  <strong>{{object.cpf}}</strong><br />
+                  {% trans 'Born date' %}:  <strong>{{object.birth_date }}</strong><br />
+                  {% trans 'Gender' %}:  <strong>{{object.get_gender_display }}</strong>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-xs-12 col-md-12">
+                  {% trans 'RG' %}:  <strong>{{object.rg}}</strong><br />
+                  {% trans 'Marital Status' %}:  <strong>{{object.get_marital_status_display}}</strong><br />
+                  {% trans 'Spouse' %}:  <strong>{{object.spouse}}</strong><br />
+                  {% trans 'Has Child?' %}:  <strong>{{object.get_has_child_display}}</strong><br />
+                  {% if object.has_child %}
+                    {% trans 'Home Many Child?' %}:  <strong>{{object.how_many_child}}</strong><br />
+                  {% endif %}
+                  <br>
+                  {% trans 'Profession' %}:  <strong>{{object.profession}}</strong><br />
+                  {% trans 'Workplace' %}:  <strong>{{object.workplace}}</strong><br />
+                  <br>
+                  {% trans 'Father Name' %}:  <strong>{{object.father_name}}</strong><br />
+                  {% trans 'Mother Name' %}:  <strong>{{object.mother_name}}</strong><br />
+
+              </div>
+          </div>
+
+
+
+
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading">{% trans 'Contact information' %}</div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-xs-12 col-md-12">
+                    {% trans 'Email' %}:  <strong>{{object.user.email}}</strong><br/>
+                    {% trans 'Address' %}:  <strong>{{object.address_line}}</strong><br/>
+                    {% trans 'Neighborhood' %}:  <strong>{{object.neighborhood}}</strong><br/>
+                    {% trans 'City' %}:  <strong>{{object.city}}</strong><br/>
+                    {% trans 'State' %}:  <strong>{{object.state}}</strong><br/>
+                    {% trans 'Phone' %} 1:  <strong>{{object.phone1}}</strong><br/>
+                    {% trans 'Phone' %} 2:  <strong>{{object.phone2}}</strong><br/>
+                </div>
+            </div>
+        </div>
+    </div>
+{%  endblock %}

@@ -105,4 +105,4 @@ class PersonListView(DashboardAccountedListView):
     ]
 
 class PersonDetailView(DashboardDetailView):
-    pass
+    model = UserProfile

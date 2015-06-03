@@ -55,3 +55,6 @@ docs/_build/
 
 # PyBuilder
 target/
+
+#uploaded_files
+uploaded_files/

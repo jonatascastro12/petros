@@ -1,4 +1,5 @@
 # coding=utf-8
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.core.validators import RegexValidator
@@ -74,7 +75,25 @@ class Church(AccountedModel):
     class Meta:
         verbose_name = _('Church')
 
+
+class MemberFunction(AccountedModel):
+
+    def __str__(self):
+        return self.name.encode('utf8')
+
+    title = models.CharField(max_length=60, verbose_name='Título abrev.', help_text='Ex: Dc')
+    name = models.CharField(max_length=255, verbose_name='Título', help_text='Ex: Diácono')
+    title_female = models.CharField(max_length=60, verbose_name='Título abrev. Feminino', help_text = 'Ex: Dcª')
+    name_female = models.CharField(max_length=255, verbose_name='Título Feminino', help_text = 'Ex: Diaconisa')
+
+    class Meta:
+        verbose_name = 'Função de membro'
+        verbose_name_plural = 'Funções de membro'
+
+
 class UserProfile(AccountedModel):
+    SITUATION_CHOICES = [('A', _('Active')), ('I', _('Inactive'))]
+
     user = models.OneToOneField(User)
 
     photo = CropImageModelField(upload_to='user_photos', blank=True, null=True)
@@ -110,7 +129,19 @@ class UserProfile(AccountedModel):
     has_child = models.CharField(blank=True, null=True, max_length='1', verbose_name=_('Has Child?'), choices=[('Y', _('Yes')), ('N', _('No'))])
     how_many_child = models.PositiveSmallIntegerField(default=0)
 
+    previous_church = models.CharField(max_length='255', blank=True, null=True, verbose_name=_('Previous church'))
+    previous_function = models.CharField(max_length='255', blank=True, null=True, verbose_name=_('Previous function'))
+    baptism_date = models.DateField(verbose_name=_('Baptism date'), blank=True, null=True)
+    baptism_place = models.CharField(max_length='255', blank=True, null=True, verbose_name=_('Baptism place'))
+    admission_date = models.DateField(blank=True, null=True, verbose_name=_('Admission date'))
+    member_function = models.ForeignKey(MemberFunction, blank=True, null=True, verbose_name=_("Member Function"))
+
+    situation = models.CharField(max_length=7, verbose_name=_("Situation"), choices=SITUATION_CHOICES)
+    church = models.ForeignKey(Church)
+    user = models.OneToOneField(User, verbose_name=_("User"), related_name="member")
+
     discipler = models.ForeignKey('self', related_name=_("discipler_user"), null=True, blank=True, verbose_name=_("Discipler"))
+
 
     #TODO: Spouse - Foreign Key
     #TODO: Children - ManyToManyField or Foreing Key in a ChildrenObject
@@ -121,40 +152,14 @@ class UserProfile(AccountedModel):
     def get_absolute_url(self):
         return reverse('main_person_detail', kwargs={'pk': self.pk})
 
-    class Meta:
-        verbose_name = _("Person")
-        verbose_name_plural = _("People")
-
-class MemberFunction(AccountedModel):
-
-    def __str__(self):
-        return self.name.encode('utf8')
-
-    title = models.CharField(max_length=60, verbose_name='Título abrev.', help_text='Ex: Dc')
-    name = models.CharField(max_length=255, verbose_name='Título', help_text='Ex: Diácono')
-    title_female = models.CharField(max_length=60, verbose_name='Título abrev. Feminino', help_text = 'Ex: Dcª')
-    name_female = models.CharField(max_length=255, verbose_name='Título Feminino', help_text = 'Ex: Diaconisa')
-
-    class Meta:
-        verbose_name = 'Função de membro'
-        verbose_name_plural = 'Funções de membro'
-
-class Member(AccountedModel):
-
-    SITUATION_CHOICES = [('A', _('Active')), ('I', _('Inactive'))]
-
-    def __str__(self):
-        return self.person.name.encode('utf8')
-
-    previous_church = models.CharField(max_length='255', blank=True, null=True, verbose_name=_('Previous church'))
-    previous_function = models.CharField(max_length='255', blank=True, null=True, verbose_name=_('Previous function'))
-    baptism_date = models.DateField(verbose_name=_('Baptism date'))
-    baptism_place = models.CharField(max_length='255',blank=True, null=True, verbose_name=_('Baptism place'))
-    admission_date = models.DateField(blank=True, null=True, verbose_name=_('Admission date'))
-    member_function = models.ForeignKey(MemberFunction, verbose_name=_("Member Function"))
-    situation = models.CharField(max_length=7, verbose_name=_("Situation"), choices=SITUATION_CHOICES)
-    church = models.ForeignKey(Church)
-    user = models.OneToOneField(User, verbose_name=_("User"), related_name="member")
+    def get_thumbnail(self):
+        if self.photo:
+            return settings.MEDIA_URL + self.photo.path
+        else:
+            if self.gender == 'F':
+                return settings.MEDIA.URL + settings.DEFAULT_USER_WOMEN_THUMB
+            else:
+                return settings.MEDIA.URL + settings.DEFAULT_USER_MEN_THUMB
 
     def get_member_function(self):
         if self.person.gender == 'F':
@@ -169,7 +174,9 @@ class Member(AccountedModel):
         return reverse('member_detail', (), {'pk': self.id})
 
     class Meta:
-        verbose_name = _('Member')
+        verbose_name = _("Person")
+        verbose_name_plural = _("People")
+
 
 
 class GroupManager(models.Manager):

@@ -116,6 +116,10 @@ MEDIA_URL = '/uploaded/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'uploaded_files')
 
+DEFAULT_USER_MEN_THUMB = 'images/user_men.png'
+DEFAULT_USER_WOMEN_THUMB = 'images/user_women.png'
+
+
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
     os.path.join(BASE_DIR, 'dashboard_view/static'),
