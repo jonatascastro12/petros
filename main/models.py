@@ -47,6 +47,9 @@ class AccountedModel(models.Model):
 class ChurchType(models.Model):
     name = models.CharField(max_length=255)
 
+    def __unicode__(self):
+        return self.name
+
     class Meta:
         verbose_name = _('Church Type')
 
@@ -157,9 +160,9 @@ class UserProfile(AccountedModel):
             return settings.MEDIA_URL + self.photo.path
         else:
             if self.gender == 'F':
-                return settings.MEDIA.URL + settings.DEFAULT_USER_WOMEN_THUMB
+                return settings.STATIC_URL + settings.DEFAULT_USER_WOMEN_THUMB
             else:
-                return settings.MEDIA.URL + settings.DEFAULT_USER_MEN_THUMB
+                return settings.STATIC_URL + settings.DEFAULT_USER_MEN_THUMB
 
     def get_member_function(self):
         if self.person.gender == 'F':
@@ -169,9 +172,6 @@ class UserProfile(AccountedModel):
 
     def get_member_function_display(self):
         return self.get_member_function()
-
-    def get_absolute_url(self):
-        return reverse('member_detail', (), {'pk': self.id})
 
     class Meta:
         verbose_name = _("Person")
