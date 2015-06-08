@@ -64,3 +64,4 @@ class PersonForm_Ecclesiastic(ModelForm):
         model = UserProfile
         fields = ['type', 'situation', 'previous_church', 'previous_function', 'baptism_date', 'baptism_place',
                   'admission_date', 'member_function', 'church', 'discipler', ]
+

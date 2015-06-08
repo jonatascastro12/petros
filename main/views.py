@@ -9,7 +9,7 @@ from dashboard_view.views import DashboardView, DashboardMenu, DashboardCreateVi
     DashboardListView, DashboardDetailView, DashboardOverviewView, DashboardProfileView
 from main.forms import PersonForm_Basic, PersonForm_Personal, PersonForm_Contact, PersonForm, UserForm, \
     UserFormNoPassword, PersonForm_Ecclesiastic
-from main.models import UserProfile
+from main.models import UserProfile, Minute
 
 menu_dict = [
     {'name': 'overview', 'icon_class': 'fa-dashboard', 'verbose_name': _('Overview'),
@@ -17,7 +17,9 @@ menu_dict = [
     {'name': 'main', 'icon_class': 'fa-users', 'verbose_name': _('People'), 'children':
         [
             {'name': 'person', 'verbose_name': _('Person'), 'link': reverse_lazy('main_person'),
-             'icon_class': 'fa-user', }
+             'icon_class': 'fa-user', },
+            {'name': 'minutes', 'verbose_name': _('Minutes'), 'link': reverse_lazy('main_minute'),
+             'icon_class': 'fa-user', },
         ]},
 
 ]
@@ -171,8 +173,8 @@ class PersonListView(DashboardListView, DashboardAccountedView):
     datatable_options = {
         'search_fields': ['user__first_name', 'user__last_name'],
         'columns': [
-            ('Nome', ['user__first_name', 'user__last_name'], 'get_user_full_name_data'),
-            ('Tipo', 'get_type_display')
+            (_('Name'), ['user__first_name', 'user__last_name'], 'get_user_full_name_data'),
+            (_('Type'), 'get_type_display')
         ],
     }
 
@@ -181,3 +183,24 @@ class PersonListView(DashboardListView, DashboardAccountedView):
 
 class PersonDetailView(DashboardDetailView):
     model = UserProfile
+    
+    
+class MinuteCreateView(DashboardCreateView, DashboardAccountedView):
+    model = Minute
+    fields = ['title', 'category', 'content', ]
+
+class MinuteUpdateView(DashboardUpdateView, DashboardAccountedView):
+    model = Minute
+
+class MinuteDetailView(DashboardDetailView, DashboardAccountedView):
+    model = Minute
+
+class MinuteListView(DashboardListView, DashboardAccountedView):
+    model = Minute
+    fields = [
+        (_('Title'), 'title'),
+        (_('Category'), 'category'),
+    ]
+    filters = [
+        'category'
+    ]

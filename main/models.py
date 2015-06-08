@@ -7,6 +7,7 @@ from django.db import models
 from django.utils.translation import gettext as _
 from localflavor.br.br_states import STATE_CHOICES
 from localflavor.br.models import BRStateField
+from tinymce.models import HTMLField
 from crop_image.forms import CropImageModelField
 
 
@@ -194,3 +195,22 @@ class Group(AccountedModel):
     users = models.ManyToManyField(User, blank=True)
 
     manager = GroupManager()
+
+
+class MinuteCategory(models.Model):
+    title = models.CharField(max_length=255)
+    description = models.CharField(max_length=255)
+
+    def __unicode__(self):
+        return self.title
+
+class Minute(AccountedModel):
+    title = models.CharField(max_length=255)
+    content = HTMLField()
+    category = models.ForeignKey(MinuteCategory)
+
+    def get_absolute_url(self):
+        return reverse('main_minute_detail', kwargs={'pk': self.pk})
+
+    def __unicode__(self):
+        return self.title

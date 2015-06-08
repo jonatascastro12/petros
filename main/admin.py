@@ -2,17 +2,20 @@ from django.contrib import admin
 # Register your models here.
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
-from main.models import UserProfile, ChurchAccount, Church, ChurchType
+from main.models import UserProfile, ChurchAccount, Church, ChurchType, Minute, MinuteCategory
 
 
 class ChurchAccountAdmin(admin.ModelAdmin):
     model = ChurchAccount
 
+
 class ChurchTypeAdmin(admin.ModelAdmin):
     model = ChurchType
 
+
 class ChurchAdmin(admin.ModelAdmin):
     model = Church
+
 
 class UserProfileInline(admin.StackedInline):
     model = UserProfile
@@ -40,8 +43,20 @@ class UserAdmin(UserAdmin):
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
     )
 
+class MinuteCategoryAdmin(admin.ModelAdmin):
+    class Meta:
+        model = MinuteCategory
+
+class MinuteAdmin(admin.ModelAdmin):
+    class Meta:
+        model = Minute
+
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
+
 admin.site.register(ChurchAccount, ChurchAccountAdmin)
 admin.site.register(Church, ChurchAdmin)
 admin.site.register(ChurchType, ChurchTypeAdmin)
+
+admin.site.register(MinuteCategory, MinuteCategoryAdmin)
+admin.site.register(Minute, MinuteAdmin)

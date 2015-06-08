@@ -44,7 +44,8 @@ INSTALLED_APPS = (
     'main',
     'sorl.thumbnail',
     'input_mask',
-    'bootstrap3_datetime'
+    'bootstrap3_datetime',
+    'tinymce',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -111,6 +112,8 @@ LOGIN_URL = '/login'
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATIC_ROOT = ''
 
 MEDIA_URL = '/uploaded/'
 

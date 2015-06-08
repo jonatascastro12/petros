@@ -32,7 +32,9 @@ urlpatterns = [
 
     url(r'^', include('crop_image.urls')),
 
-    url(r'^main', include('main.urls'))
+    url(r'^main', include('main.urls')),
+
+    url(r'^tinymce/', include('tinymce.urls')),
 
 ]
 
