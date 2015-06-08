@@ -141,7 +141,6 @@ class UserProfile(AccountedModel):
 
     situation = models.CharField(max_length=7, verbose_name=_("Situation"), choices=SITUATION_CHOICES)
     church = models.ForeignKey(Church)
-    user = models.OneToOneField(User, verbose_name=_("User"), related_name="member")
 
     discipler = models.ForeignKey('self', related_name=_("discipler_user"), null=True, blank=True, verbose_name=_("Discipler"))
 
@@ -165,10 +164,12 @@ class UserProfile(AccountedModel):
                 return settings.STATIC_URL + settings.DEFAULT_USER_MEN_THUMB
 
     def get_member_function(self):
-        if self.person.gender == 'F':
-            return self.member_function.name_female
-        else:
-            return self.member_function.name
+        if self.member_function is not None:
+            if self.gender == 'F':
+                return self.member_function.name_female
+            else:
+                return self.member_function.name
+        return ""
 
     def get_member_function_display(self):
         return self.get_member_function()

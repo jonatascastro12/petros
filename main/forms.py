@@ -1,5 +1,5 @@
 from bootstrap3_datetime.widgets import DateTimePicker
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.models import User
 from django.forms.fields import DateField, CharField
 from django.forms.models import ModelForm
@@ -14,15 +14,22 @@ class PersonForm(ModelForm):
         model = UserProfile
         exclude = ['user', 'church_account']
 
-class PersonForm_User(ModelForm):
+class PersonForm_Basic(ModelForm):
     class Meta:
         model = UserProfile
-        fields = ['photo', 'type']
+        fields = ['photo',]
 
 class UserForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'username', 'email', 'password1', 'password2']
+
+class UserFormNoPassword(UserChangeForm):
+    password = None
+
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'username', 'email']
 
 
 class PersonForm_Personal(ModelForm):
@@ -42,5 +49,18 @@ class PersonForm_Contact(ModelForm):
 
     class Meta:
         model = UserProfile
-
         fields = ['address_line', 'neighborhood', 'city', 'state', 'zipcode', 'phone1', 'phone2', ]
+
+
+#TODO: make church as "auto select2 field"
+#TODO: make discipler as "auto select2 field"
+
+class PersonForm_Ecclesiastic(ModelForm):
+    baptism_date = DateField(required=False, widget=DateTimePicker(options={"format": "DD/MM/YYYY",
+                                       "pickTime": False, "startDate": "new a({y: 1970})"}), label=_('Bapstism date'))
+    admission_date = DateField(required=False, widget=DateTimePicker(options={"format": "DD/MM/YYYY",
+                                       "pickTime": False, "startDate": "new a({y: 1970})"}), label=_('Admission date'))
+    class Meta:
+        model = UserProfile
+        fields = ['type', 'situation', 'previous_church', 'previous_function', 'baptism_date', 'baptism_place',
+                  'admission_date', 'member_function', 'church', 'discipler', ]

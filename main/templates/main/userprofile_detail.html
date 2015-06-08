@@ -3,60 +3,87 @@
 {% load staticfiles %}
 
 {% block detail %}
-    <div class="panel panel-default">
-      <div class="panel-heading">{% trans 'Personal information' %}</div>
-      <div class="panel-body">
-          <div class="row">
-              <div class="col-xs-6 col-md-3">
-                <a href="#" class="thumbnail">
-                  <img data-src="holder.js/100%x180" src="{{ object.get_thumbnail }}" alt="...">
-                </a>
-              </div>
-              <div class="col-xs-6 col-md-9">
-                  <h2>{{object.user.get_full_name}} <br/><small>{{ object.get_type_display }}</small></h2>
-                  {% trans 'CPF' %}:  <strong>{{object.cpf}}</strong><br />
-                  {% trans 'Born date' %}:  <strong>{{object.birth_date }}</strong><br />
-                  {% trans 'Gender' %}:  <strong>{{object.get_gender_display }}</strong>
-              </div>
-          </div>
-          <div class="row">
-              <div class="col-xs-12 col-md-12">
-                  {% trans 'RG' %}:  <strong>{{object.rg}}</strong><br />
-                  {% trans 'Marital Status' %}:  <strong>{{object.get_marital_status_display}}</strong><br />
-                  {% trans 'Spouse' %}:  <strong>{{object.spouse}}</strong><br />
-                  {% trans 'Has Child?' %}:  <strong>{{object.get_has_child_display}}</strong><br />
-                  {% if object.has_child %}
-                    {% trans 'Home Many Child?' %}:  <strong>{{object.how_many_child}}</strong><br />
-                  {% endif %}
-                  <br>
-                  {% trans 'Profession' %}:  <strong>{{object.profession}}</strong><br />
-                  {% trans 'Workplace' %}:  <strong>{{object.workplace}}</strong><br />
-                  <br>
-                  {% trans 'Father Name' %}:  <strong>{{object.father_name}}</strong><br />
-                  {% trans 'Mother Name' %}:  <strong>{{object.mother_name}}</strong><br />
-
-              </div>
-          </div>
-
-
-
-
-      </div>
-    </div>
-    <div class="panel panel-default">
-      <div class="panel-heading">{% trans 'Contact information' %}</div>
+    {% block message %}
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{% if message.tags %}{{ message.tags }} alert-dismissible"{% endif %}>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                {{ message }}
+            </div>
+            {% endfor %}
+        {% endif %}
+    {% endblock %}
+    <div class="panel">
         <div class="panel-body">
-            <div class="row">
-                <div class="col-xs-12 col-md-12">
-                    {% trans 'Email' %}:  <strong>{{object.user.email}}</strong><br/>
-                    {% trans 'Address' %}:  <strong>{{object.address_line}}</strong><br/>
-                    {% trans 'Neighborhood' %}:  <strong>{{object.neighborhood}}</strong><br/>
-                    {% trans 'City' %}:  <strong>{{object.city}}</strong><br/>
-                    {% trans 'State' %}:  <strong>{{object.state}}</strong><br/>
-                    {% trans 'Phone' %} 1:  <strong>{{object.phone1}}</strong><br/>
-                    {% trans 'Phone' %} 2:  <strong>{{object.phone2}}</strong><br/>
+            {% csrf_token %}
+{#            {{ form_user|as_bootstrap}}#}
+                <div class="col-xs-4 col-lg-2">
+                    <img src="{{ object.get_thumbnail }}" class="img-thumbnail img-responsive">
+                </div>
+                <div class="col-xs-8 col-lg-10">
+                    <h2>{{ object.user.get_full_name }}<br>
+                        <small>{{ object.get_type_display }} {% if object.member_function %} | {{ object.get_member_function_display }}{% endif %}</small>
+                    </h2>
+                    <p><strong>Email:</strong> {{ object.user.email }}</p>
+                    <p><strong>{% trans "Username" %}</strong>: {{ object.user.username }}</p>
+                </div>
+
+
+{#            {% buttons %}#}
+        </div>
+    </div>
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#personal" aria-controls="personal" role="tab" data-toggle="tab">
+            {% trans 'Personal' %} {% if form_personal.errors %}<span class="text-danger fa fa-exclamation-triangle"></span>{% endif %}
+        </a></li>
+        <li role="presentation"><a href="#contact" aria-controls="contact" role="tab" data-toggle="tab">
+            {% trans 'Contact' %}  {% if form_contact.errors %}<span class="text-danger fa fa-exclamation-triangle"></span>{% endif %}
+        </a></li>
+        <li role="presentation"><a href="#ecclesiastic" aria-controls="ecclesiastic" role="tab" data-toggle="tab">
+            {% trans 'Ecclesiastic' %}  {% if form_ecclesiastic.errors %}<span class="text-danger fa fa-exclamation-triangle"></span>{% endif %}
+        </a></li>
+    </ul>
+
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="personal">
+                <div class="panel-body">
+                    <p><strong>{% trans "Birth date" %}</strong> {{ object.birth_date }} </p>
+                    {% if object.rg %}<p><strong>{% trans "RG" %}</strong> {{ object.rg }} </p>{% endif %}
+                    <p><strong>{% trans "CPF" %}</strong> {{ object.cpf }} </p>
+                    <p><strong>{% trans "Gender" %}</strong> {{ object.get_gender_display }} </p>
+                    {% if object.marital_status %}<p><strong>{% trans "Marital status" %}</strong> {{ object.get_marital_status_display }} </p>{% endif %}
+                    {% if object.father_name %}<p><strong>{% trans "Father name" %}</strong> {{ object.father_name }} </p>{% endif %}
+                    {% if object.mother_name %}<p><strong>{% trans "Mother name" %}</strong> {{ object.mother_name }} </p>{% endif %}
+                    {% if object.spouse %}<p><strong>{% trans "Spouse" %}</strong> {{ object.spouse }} </p>{% endif %}
+                    {% if object.blood_type %}<p><strong>{% trans "Blood Type" %}</strong> {{ object.get_blood_type_display }} </p>{% endif %}
+                    {% if object.has_child %}<p><strong>{% trans "Has Child?" %}</strong> {{ object.get_has_child_display }} </p>{% endif %}
+                    {% if object.how_many_child %}<p><strong>{% trans "How many child?" %}</strong> {{ object.how_many_child }} </p>{% endif %}
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="contact">
+                 <div class="panel-body">
+                    {% if object.address_line %}<p><strong>{% trans "Address" %} </strong>: {{ object.address_line }}{% endif %}
+                    {% if object.neighborhood %}<p><strong>{% trans "Neighborhood" %}</strong>: {{ object.neighborhood }}{% endif %}
+                    {% if object.city %}<p><strong>{% trans "City" %}</strong>: {{ object.city }}{% endif %}
+                    {% if object.state %}<p><strong>{% trans "State" %}</strong>: {{ object.state }}{% endif %}
+                    {% if object.zipcode %}<p><strong>{% trans "Zipcode" %}</strong>: {{ object.zipcode }}{% endif %}
+                    {% if object.phone1 %}<p><strong>{% trans "Phone 1" %}</strong>: {{ object.phone1 }}{% endif %}
+                    {% if object.phone2 %}<p><strong>{% trans "Phone 2" %}</strong>: {{ object.phone2 }}{% endif %}
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="ecclesiastic">
+                 <div class="panel-body">
+                     <p><strong>{% trans "Type" %}</strong>: {{ object.get_type_display }}
+                     {% if object.situation %}<p><strong>{% trans "Situation" %}</strong>: {{ object.get_situation_display }}{% endif %}
+                     {% if object.previous_church %}<p><strong>{% trans "Previous church" %}</strong>: {{ object.previous_church }}{% endif %}
+                     {% if object.previous_function %}<p><strong>{% trans "Previous function" %}</strong>: {{ object.previous_function }}{% endif %}
+                     {% if object.baptism_date %}<p><strong>{% trans "Bapstism date" %}</strong>: {{ object.baptism_date }}{% endif %}
+                     {% if object.baptism_place %}<p><strong>{% trans "Baptism place" %}</strong>: {{ object.baptism_place }}{% endif %}
+                     {% if object.admission_date %}<p><strong>{% trans "Admission date" %}</strong>: {{ object.admission_date }}{% endif %}
+                     {% if object.member_function %}<p><strong>{% trans "Member Function" %}</strong>: {{ object.member_function }}{% endif %}
+                     {% if object.church %}<p><strong>{% trans "Church" %}</strong>: {{ object.church }}{% endif %}
+                     {% if object.discipler %}<p><strong>{% trans "Discipler" %}</strong>: {{ object.discipler }}{% endif %}
                 </div>
             </div>
         </div>
-    </div>
 {%  endblock %}
