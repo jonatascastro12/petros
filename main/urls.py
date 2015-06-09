@@ -10,7 +10,6 @@ urlpatterns = patterns('',
         url(_(r'[/]$'), PersonDetailView.as_view(), name="main_person_detail"),
         url(_(r'/edit$'), PersonUpdateView.as_view(), name="main_person_edit"),
     ])),
-
     url(_(r'^/minute$'), MinuteListView.as_view(), name="main_minute"),
     url(_(r'^/minute/add$'), MinuteCreateView.as_view(), name="main_minute_add"),
     url(_(r'^/minute/(?P<pk>[0-9]+)'), include([

@@ -1,0 +1,14 @@
+{% load i18n %}
+<script type="text/javascript">
+    $.ajax({
+        url: '{% url ajax_view %}',
+        type: 'get',
+        data: {'widget_name': '{{ widget_name }}'},
+        success: function(data){
+            alert(data);
+            $('.person_month_birthday_widget')
+        },error: function(){
+            Dashboard.show_message("{% trans 'Some error occurred.' %}", 'danger');
+        }
+    });
+</script>

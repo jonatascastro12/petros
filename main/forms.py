@@ -6,7 +6,7 @@ from django.forms.models import ModelForm
 from django.utils.translation import gettext as _
 from input_mask.contrib.localflavor.br.widgets import BRCPFInput, BRZipCodeInput, BRPhoneNumberInput
 from localflavor.br.forms import BRCPFField, BRZipCodeField, BRPhoneNumberField
-from main.models import UserProfile
+from main.models import UserProfile, Minute
 
 
 class PersonForm(ModelForm):
@@ -60,8 +60,17 @@ class PersonForm_Ecclesiastic(ModelForm):
                                        "pickTime": False, "startDate": "new a({y: 1970})"}), label=_('Bapstism date'))
     admission_date = DateField(required=False, widget=DateTimePicker(options={"format": "DD/MM/YYYY",
                                        "pickTime": False, "startDate": "new a({y: 1970})"}), label=_('Admission date'))
+
     class Meta:
         model = UserProfile
         fields = ['type', 'situation', 'previous_church', 'previous_function', 'baptism_date', 'baptism_place',
                   'admission_date', 'member_function', 'church', 'discipler', ]
 
+
+class MinuteForm(ModelForm):
+    date = DateField(widget=DateTimePicker(options={"format": "DD/MM/YYYY",
+                                       "pickTime": False, "startDate": "new a({y: 1970})"}), label=_('Date'))
+
+    class Meta:
+        model = Minute
+        fields = ['title', 'date', 'category', 'content', ]

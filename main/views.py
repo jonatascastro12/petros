@@ -1,14 +1,18 @@
+from django.conf.global_settings import SHORT_DATE_FORMAT
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.http.response import HttpResponseRedirect
+from django.utils import formats
 from django.utils.translation import gettext as _
 from django.views.generic.base import View
+from dashboard_view.dashboard_widgets import DashboardWidget
 from dashboard_view.views import DashboardView, DashboardMenu, DashboardCreateView, DashboardUpdateView, \
     DashboardListView, DashboardDetailView, DashboardOverviewView, DashboardProfileView
+from main.dashboard_widgets import PetrosDashboardWidget
 from main.forms import PersonForm_Basic, PersonForm_Personal, PersonForm_Contact, PersonForm, UserForm, \
-    UserFormNoPassword, PersonForm_Ecclesiastic
+    UserFormNoPassword, PersonForm_Ecclesiastic, MinuteForm
 from main.models import UserProfile, Minute
 
 menu_dict = [
@@ -19,7 +23,7 @@ menu_dict = [
             {'name': 'person', 'verbose_name': _('Person'), 'link': reverse_lazy('main_person'),
              'icon_class': 'fa-user', },
             {'name': 'minutes', 'verbose_name': _('Minutes'), 'link': reverse_lazy('main_minute'),
-             'icon_class': 'fa-user', },
+             'icon_class': 'fa-file-text-o', },
         ]},
 
 ]
@@ -27,12 +31,26 @@ DashboardView.menu = DashboardMenu(menu=menu_dict)
 
 class PetrosDashboardOverviewView(DashboardOverviewView):
     template_name = "dashboard_base.html"
+    widgets_list = [
+        ('person_statistics',),
+        ('last_signups',),
+        ('person_month_birthday',),
+    ]
+    widget_class = PetrosDashboardWidget
+
+DashboardView.widget_class = PetrosDashboardWidget
 
 class PetrosDashboardProfileView(DashboardProfileView):
     template_name = "dashboard_base.html"
 
 
 class DashboardAccountedView(View):
+    
+    def form_valid(self, *args, **kwargs):
+        if kwargs['form']:
+            print 'ok'
+        return super(DashboardAccountedView, self).form_valid(*args, **kwargs)
+    
     def get_queryset(self):
         queryset = super(DashboardAccountedView, self).get_queryset()
 
@@ -187,20 +205,32 @@ class PersonDetailView(DashboardDetailView):
     
 class MinuteCreateView(DashboardCreateView, DashboardAccountedView):
     model = Minute
-    fields = ['title', 'category', 'content', ]
+    form_class = MinuteForm
+
 
 class MinuteUpdateView(DashboardUpdateView, DashboardAccountedView):
     model = Minute
+    form_class = MinuteForm
 
 class MinuteDetailView(DashboardDetailView, DashboardAccountedView):
     model = Minute
 
 class MinuteListView(DashboardListView, DashboardAccountedView):
     model = Minute
-    fields = [
-        (_('Title'), 'title'),
-        (_('Category'), 'category'),
-    ]
+    datatable_options = {
+        'columns': [
+            (_('Date'), 'date', 'get_date_data'),
+            (_('Title'), 'title'),
+            (_('Category'), 'category__name', 'get_category_data'),
+        ]
+    }
     filters = [
-        'category'
+        (_('Category'), 'category', 'checkbox_choice'),
+        (_('Date'), 'date', 'date_range'),
     ]
+
+    def get_date_data(self, instance, *args, **kwargs):
+        return formats.date_format(instance.date, 'SHORT_DATE_FORMAT')
+
+    def get_category_data(self, instance, *args, **kwargs):
+        return instance.category

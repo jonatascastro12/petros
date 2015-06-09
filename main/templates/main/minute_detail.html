@@ -1,0 +1,21 @@
+{% extends 'generics/dashboard_detail.html' %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block detail %}
+    {% block message %}
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{% if message.tags %}{{ message.tags }} alert-dismissible"{% endif %}>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                {{ message }}
+            </div>
+            {% endfor %}
+        {% endif %}
+    {% endblock %}
+
+    <h1>{{ object.title }}<small> - {{ object.category }}</small></h1>
+    <h2><small>{{ object.date }}</small></h2>
+    <br>
+    {{ object.content|safe }}
+{%  endblock %}

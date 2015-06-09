@@ -31,6 +31,7 @@ urlpatterns = [
     url(r'^logout$', LogoutView.as_view(), name='logout'),
 
     url(r'^', include('crop_image.urls')),
+    url(r'^dashboard_utils/', include('dashboard_view.urls')),
 
     url(r'^main', include('main.urls')),
 

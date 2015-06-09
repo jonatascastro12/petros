@@ -1,5 +1,7 @@
 # coding=utf-8
+from _threading_local import local
 from django.conf import settings
+from django.contrib.auth.middleware import get_user
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.core.validators import RegexValidator
@@ -36,7 +38,7 @@ class AccountedManager(models.Manager):
     pass
 
 class AccountedModel(models.Model):
-    church_account = models.ForeignKey(ChurchAccount)
+    church_account = models.ForeignKey(ChurchAccount, editable=False)
     added = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -44,6 +46,7 @@ class AccountedModel(models.Model):
 
     class Meta:
         abstract = True
+
 
 class ChurchType(models.Model):
     name = models.CharField(max_length=255)
@@ -206,6 +209,7 @@ class MinuteCategory(models.Model):
 
 class Minute(AccountedModel):
     title = models.CharField(max_length=255)
+    date = models.DateField()
     content = HTMLField()
     category = models.ForeignKey(MinuteCategory)
 
