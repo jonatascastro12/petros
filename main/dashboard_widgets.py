@@ -1,3 +1,4 @@
+import json
 from django.core import serializers
 from django.http.response import HttpResponse, JsonResponse
 from django.template.context import Context
@@ -20,5 +21,11 @@ class PetrosDashboardWidget(DashboardWidget):
 
     def _action_person_month_birthday(self, request):
         today = datetime.date.today()
-        data = serializers.serialize("json", UserProfile.accounted.filter(birth_date__year=today.year, birth_date__month=today.month).all()[:10])
+        users = UserProfile.accounted.filter(birth_date__month=today.month).all()[:10]
+        users_list = []
+        for u in users:
+            users_list.append({'name': u.user.get_full_name(), 'day': str(u.birth_date.day),
+                               'thumb': u.get_small_thumbnail(), 'url': u.get_absolute_url()})
+        users_list = sorted(users_list, key=lambda u:int(u['day']))
+        data = json.dumps({'users_list': users_list, 'month': today.strftime('%B')})
         return HttpResponse(data)

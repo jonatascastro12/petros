@@ -1,14 +1,15 @@
 # coding=utf-8
-from _threading_local import local
+import os
 from django.conf import settings
-from django.contrib.auth.middleware import get_user
 from django.contrib.auth.models import User
+from django.core.files.storage import default_storage
 from django.core.urlresolvers import reverse
 from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.translation import gettext as _
 from localflavor.br.br_states import STATE_CHOICES
 from localflavor.br.models import BRStateField
+from sorl.thumbnail.shortcuts import get_thumbnail
 from tinymce.models import HTMLField
 from crop_image.forms import CropImageModelField
 
@@ -68,7 +69,7 @@ class Church(AccountedModel):
     state = models.CharField(blank=True, null=True,  max_length='2', verbose_name = 'UF',choices=STATE_CHOICES)
     phone1 = models.CharField(blank=True, max_length=15, verbose_name=_('Phone')+' 1')
     phone2 = models.CharField(blank=True, max_length=15, verbose_name=_('Phone')+' 2')
-    type = models.ForeignKey(ChurchType)
+    type = models.ForeignKey(ChurchType, blank=True, null=True)
     is_mother = models.BooleanField(default=True)
     church_mother = models.ForeignKey('self', null=True, blank=True, related_name="mother")
     logo = CropImageModelField(upload_to="church_logos", null=True, blank=True)
@@ -111,10 +112,10 @@ class UserProfile(AccountedModel):
         ('M', _('Member')),
     ))
 
-    cpf = models.CharField(max_length=14, verbose_name='CPF')
+    cpf = models.CharField(max_length=14, verbose_name='CPF', null=True, blank=True)
     rg = models.CharField(max_length=14, blank=True, null=True, verbose_name='RG')
 
-    birth_date = models.DateField(verbose_name=_('Birth Date'))
+    birth_date = models.DateField(verbose_name=_('Birth Date'), null=True, blank=True)
     gender = models.CharField(max_length='1', verbose_name=_('Gender'), choices=[('M', _('Male')), ('F', _('Female'))])
     blood_type = models.CharField(max_length='2', blank=True, null=True, verbose_name=_('Blood Type'), choices=[('A+', 'A+'), ('A-', 'A-'), ('B+', 'B+'), ('B-','B-'), ('O+', 'O+'), ('O-', 'O-')])
 
@@ -143,7 +144,7 @@ class UserProfile(AccountedModel):
     admission_date = models.DateField(blank=True, null=True, verbose_name=_('Admission date'))
     member_function = models.ForeignKey(MemberFunction, blank=True, null=True, verbose_name=_("Member Function"))
 
-    situation = models.CharField(max_length=7, verbose_name=_("Situation"), choices=SITUATION_CHOICES)
+    situation = models.CharField(max_length=7, verbose_name=_("Situation"), choices=SITUATION_CHOICES, default='A')
     church = models.ForeignKey(Church)
 
     discipler = models.ForeignKey('self', related_name=_("discipler_user"), null=True, blank=True, verbose_name=_("Discipler"))
@@ -161,6 +162,18 @@ class UserProfile(AccountedModel):
     def get_thumbnail(self):
         if self.photo:
             return settings.MEDIA_URL + self.photo.path
+        else:
+            if self.gender == 'F':
+                return settings.STATIC_URL + settings.DEFAULT_USER_WOMEN_THUMB
+            else:
+                return settings.STATIC_URL + settings.DEFAULT_USER_MEN_THUMB
+
+    def get_small_thumbnail(self):
+        if self.photo:
+            file = default_storage.open(os.path.join(settings.MEDIA_ROOT, self.photo.path))
+            im = get_thumbnail(file, '100x100', crop='center', quality=99)
+            url = im.url
+            return url
         else:
             if self.gender == 'F':
                 return settings.STATIC_URL + settings.DEFAULT_USER_WOMEN_THUMB

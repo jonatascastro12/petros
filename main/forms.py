@@ -33,8 +33,8 @@ class UserFormNoPassword(UserChangeForm):
 
 
 class PersonForm_Personal(ModelForm):
-    cpf = BRCPFField(required=True, label='CPF', widget=BRCPFInput)
-    birth_date = DateField(widget=DateTimePicker(options={"format": "DD/MM/YYYY",
+    cpf = BRCPFField(required=False, label='CPF', widget=BRCPFInput)
+    birth_date = DateField(required=False, widget=DateTimePicker(options={"format": "DD/MM/YYYY",
                                        "pickTime": False, "startDate": "new a({y: 1970})"}), label=_('Birth date'))
 
     class Meta:

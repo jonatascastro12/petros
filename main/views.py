@@ -25,6 +25,11 @@ menu_dict = [
             {'name': 'minutes', 'verbose_name': _('Minutes'), 'link': reverse_lazy('main_minute'),
              'icon_class': 'fa-file-text-o', },
         ]},
+    {'name': 'reports', 'icon_class': 'fa-file-text', 'verbose_name': _('Reports'), 'children':
+        [
+            {'name': 'month_birthday', 'verbose_name': _('Month Birthday'),
+             'link': reverse_lazy('main_report_month_birthday'), 'icon_class': 'fa-birthday-cake', },
+        ]},
 
 ]
 DashboardView.menu = DashboardMenu(menu=menu_dict)
@@ -234,3 +239,6 @@ class MinuteListView(DashboardListView, DashboardAccountedView):
 
     def get_category_data(self, instance, *args, **kwargs):
         return instance.category
+
+class MonthBirthdayReportView(View):
+    pass
