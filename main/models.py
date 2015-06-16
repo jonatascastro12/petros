@@ -135,7 +135,7 @@ class UserProfile(AccountedModel):
     marital_status = models.CharField(max_length='1', blank=True, null=True, choices=[('S', _('Single')), ('D', _('Divorced')), ('M', _('Married')), ('W', _('Widow')), ])
     spouse = models.CharField(max_length='255', blank=True, null=True, verbose_name=_('Spouse'))
     has_child = models.CharField(blank=True, null=True, max_length='1', verbose_name=_('Has Child?'), choices=[('Y', _('Yes')), ('N', _('No'))])
-    how_many_child = models.PositiveSmallIntegerField(default=0)
+    how_many_child = models.PositiveSmallIntegerField(default=0, blank=True, null=True)
 
     previous_church = models.CharField(max_length='255', blank=True, null=True, verbose_name=_('Previous church'))
     previous_function = models.CharField(max_length='255', blank=True, null=True, verbose_name=_('Previous function'))
@@ -170,15 +170,17 @@ class UserProfile(AccountedModel):
 
     def get_small_thumbnail(self):
         if self.photo:
-            file = default_storage.open(os.path.join(settings.MEDIA_ROOT, self.photo.path))
-            im = get_thumbnail(file, '100x100', crop='center', quality=99)
-            url = im.url
-            return url
+            try:
+                file = default_storage.open(os.path.join(settings.MEDIA_ROOT, self.photo.path))
+                im = get_thumbnail(file, '100x100', crop='center', quality=99)
+                url = im.url
+                return url
+            except:
+                pass
+        if self.gender == 'F':
+            return settings.STATIC_URL + settings.DEFAULT_USER_WOMEN_THUMB
         else:
-            if self.gender == 'F':
-                return settings.STATIC_URL + settings.DEFAULT_USER_WOMEN_THUMB
-            else:
-                return settings.STATIC_URL + settings.DEFAULT_USER_MEN_THUMB
+            return settings.STATIC_URL + settings.DEFAULT_USER_MEN_THUMB
 
     def get_member_function(self):
         if self.member_function is not None:

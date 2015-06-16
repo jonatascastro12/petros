@@ -9,7 +9,7 @@
             var out;
             $('.person_month_birthday_widget .month').html(' - '+data.month);
             for (var i=0; i < data['users_list'].length; i++){
-                out = '<p class="col-xs-12 col-md-6 col-lg-5"><a href="'+data['users_list'][i]['url']+'"><img class="img-circle" width="20%" src="'+
+                out = '<p class="col-xs-12 col-md-6 col-lg-6"><a href="'+data['users_list'][i]['url']+'"><img class="img-circle" width="20%" src="'+
                         data['users_list'][i]['thumb']+'" /></a> <a href="'+data['users_list'][i]['url']+'">'+data['users_list'][i]['day']+
                         ' - '+data['users_list'][i]['name']+'</a></p>';
                 $('.person_month_birthday_widget .panel-body').append(out)

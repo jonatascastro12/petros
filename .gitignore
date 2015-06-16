@@ -58,3 +58,6 @@ target/
 
 #uploaded_files
 uploaded_files/
+
+#JetBrains
+.idea/

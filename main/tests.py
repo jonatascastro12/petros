@@ -76,7 +76,6 @@ class UserProfileTestCase(TestCase):
                 'situation': 'A',
                 'gender': 'M',
                 'type': 'M',
-                'how_many_child': 0,
                 'church': str(self.c.id)
              }
         )
