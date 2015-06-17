@@ -17,6 +17,7 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
+from dashboard_view import dashboard_site
 from dashboard_view.views import LoginView, LogoutView
 import main
 from main.views import PetrosDashboardOverviewView, PetrosDashboardProfileView
@@ -31,7 +32,8 @@ urlpatterns = [
     url(r'^logout$', LogoutView.as_view(), name='logout'),
 
     url(r'^', include('crop_image.urls')),
-    url(r'^dashboard_utils/', include('dashboard_view.urls')),
+
+    url(r'^dashboard_utils/', include(dashboard_site._dashboard.get_urls())),
 
     url(r'^main', include('main.urls')),
 

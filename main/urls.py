@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, url, include
 from django.utils.translation import gettext as _
 from main.views import PersonCreateView, PersonListView, PersonDetailView, PersonUpdateView, MinuteListView, \
-    MinuteCreateView, MinuteUpdateView, MinuteDetailView, MonthBirthdayReportView
+    MinuteCreateView, MinuteUpdateView, MinuteDetailView
 
 urlpatterns = patterns('',
     url(_(r'^/person$'), PersonListView.as_view(), name="main_person"),
@@ -17,7 +17,7 @@ urlpatterns = patterns('',
         url(_(r'/edit$'), MinuteUpdateView.as_view(), name="main_minute_edit"),
     ])),
 
-    url(_(r'^/reports'), include([
-        url(_('/month_birthday'), MonthBirthdayReportView.as_view(), name='main_report_month_birthday')
-    ]))
+    # url(_(r'^/reports'), include([
+    #     url(_('/month_birthday'), MonthBirthdayReportView.as_view(), name='main_report_month_birthday')
+    # ]))
 )

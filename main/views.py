@@ -1,16 +1,13 @@
-from django.conf.global_settings import SHORT_DATE_FORMAT
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.http.response import HttpResponseRedirect
-from django.shortcuts import render_to_response
 from django.utils import formats
 from django.utils.translation import gettext as _
 from django.views.generic.base import View
-from dashboard_view.dashboard_widgets import DashboardWidget
 from dashboard_view.views import DashboardView, DashboardMenu, DashboardCreateView, DashboardUpdateView, \
-    DashboardListView, DashboardDetailView, DashboardOverviewView, DashboardProfileView, DashboardReportView
+    DashboardListView, DashboardDetailView, DashboardOverviewView, DashboardProfileView
 from main.dashboard_widgets import PetrosDashboardWidget
 from main.forms import PersonForm_Basic, PersonForm_Personal, PersonForm_Contact, PersonForm, UserForm, \
     UserFormNoPassword, PersonForm_Ecclesiastic, MinuteForm, MonthBirthdayReportForm
@@ -29,7 +26,7 @@ menu_dict = [
     {'name': 'reports', 'icon_class': 'fa-file-text', 'verbose_name': _('Reports'), 'children':
         [
             {'name': 'month_birthday', 'verbose_name': _('Month Birthday'),
-             'link': reverse_lazy('main_report_month_birthday'), 'icon_class': 'fa-birthday-cake', },
+             'link': reverse_lazy('report_month_birthday'), 'icon_class': 'fa-birthday-cake', },
         ]},
 
 ]
@@ -241,19 +238,6 @@ class MinuteListView(DashboardListView, DashboardAccountedView):
     def get_category_data(self, instance, *args, **kwargs):
         return instance.category
 
-class MonthBirthdayReportView(DashboardReportView):
-    form_class = MonthBirthdayReportForm
-    verbose_name = _('Month Birthday')
 
-    def get_success_url(self):
-        return HttpResponseRedirect(self.get_success_url())
-
-    def form_valid(self, form):
-        objects = UserProfile.accounted.\
-            filter(birth_date__month=form.cleaned_data.get('month')).\
-            all()
-        objects = list(objects)
-        objects = sorted(objects, key=lambda u:int(u.birth_date.day))
-        return self.render_to_response(context=self.get_context_data(form=form, objects=objects))
 
 

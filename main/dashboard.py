@@ -1,1 +1,4 @@
-__author__ = 'Eli Vilela'
+from dashboard_view import dashboard_site
+from main.dashboard_reports import MonthBirthdayReport
+
+dashboard_site.register(MonthBirthdayReport)
