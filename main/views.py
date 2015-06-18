@@ -4,36 +4,16 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.http.response import HttpResponseRedirect
-from django.shortcuts import render_to_response
 from django.utils import formats
 from django.utils.translation import gettext as _
 from django.views.generic.base import View
-from dashboard_view.dashboard_widgets import DashboardWidget
-from dashboard_view.views import DashboardView, DashboardMenu, DashboardCreateView, DashboardUpdateView, \
+from dashboard_view.views import DashboardView, DashboardCreateView, DashboardUpdateView, \
     DashboardListView, DashboardDetailView, DashboardOverviewView, DashboardProfileView, DashboardReportView
 from main.dashboard_widgets import PetrosDashboardWidget
 from main.forms import PersonForm_Basic, PersonForm_Personal, PersonForm_Contact, PersonForm, UserForm, \
     UserFormNoPassword, PersonForm_Ecclesiastic, MinuteForm, MonthBirthdayReportForm
 from main.models import UserProfile, Minute
 
-menu_dict = [
-    {'name': 'overview', 'icon_class': 'fa-dashboard', 'verbose_name': _('Overview'),
-     'link': reverse_lazy('dashboard_overview')},
-    {'name': 'main', 'icon_class': 'fa-users', 'verbose_name': _('People'), 'children':
-        [
-            {'name': 'person', 'verbose_name': _('Person'), 'link': reverse_lazy('main_person'),
-             'icon_class': 'fa-user', },
-            {'name': 'minutes', 'verbose_name': _('Minutes'), 'link': reverse_lazy('main_minute'),
-             'icon_class': 'fa-file-text-o', },
-        ]},
-    {'name': 'reports', 'icon_class': 'fa-file-text', 'verbose_name': _('Reports'), 'children':
-        [
-            {'name': 'month_birthday', 'verbose_name': _('Month Birthday'),
-             'link': reverse_lazy('main_report_month_birthday'), 'icon_class': 'fa-birthday-cake', },
-        ]},
-
-]
-DashboardView.menu = DashboardMenu(menu=menu_dict)
 
 class PetrosDashboardOverviewView(DashboardOverviewView):
     template_name = "dashboard_base.html"

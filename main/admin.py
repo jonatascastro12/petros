@@ -2,7 +2,37 @@ from django.contrib import admin
 # Register your models here.
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse_lazy
+from django.utils.translation import gettext as _
+from dashboard_view.admin import DashboardAdminSite
+from dashboard_view.dashboard_menu import DashboardMenu
+from main.dashboard_reports import MonthBirthdayReport
 from main.models import UserProfile, ChurchAccount, Church, ChurchType, Minute, MinuteCategory
+
+menu_dict = [
+    {'name': 'overview', 'icon_class': 'fa-dashboard', 'verbose_name': _('Overview'),
+     'link': reverse_lazy('dashboard:index')},
+    {'name': 'main', 'icon_class': 'fa-users', 'verbose_name': _('People'), 'children':
+        [
+            {'name': 'person', 'verbose_name': _('Person'), 'link': reverse_lazy('main_person'),
+             'icon_class': 'fa-user', },
+            {'name': 'minutes', 'verbose_name': _('Minutes'), 'link': reverse_lazy('main_minute'),
+             'icon_class': 'fa-file-text-o', },
+    ]},
+
+]
+
+menu = DashboardMenu(menu=menu_dict)
+
+class PetrosDashboardAdmin(DashboardAdminSite):
+    site_header = _('Petros Dashboard')
+    site_title = _('Petros Dashboard')
+    menu = menu
+
+
+dashboard = PetrosDashboardAdmin('dashboard')
+
+dashboard.register_report(MonthBirthdayReport)
 
 
 class ChurchAccountAdmin(admin.ModelAdmin):

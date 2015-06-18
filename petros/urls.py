@@ -18,20 +18,21 @@ from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
 from dashboard_view.views import LoginView, LogoutView
-import main
-from main.views import PetrosDashboardOverviewView, PetrosDashboardProfileView
+from main.admin import dashboard
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
 
-    url(r'^dashboard/$', PetrosDashboardOverviewView.as_view(), name="dashboard_overview"),
-    url(r'^dashboard/profile/$', PetrosDashboardProfileView.as_view(), name="dashboard_profile"),
+    url(r'^dashboard/', include(dashboard.urls)),
+
+    #url(r'^dashboard/$', PetrosDashboardOverviewView.as_view(), name="dashboard_overview"),
+    #url(r'^dashboard/profile/$', PetrosDashboardProfileView.as_view(), name="dashboard_profile"),
 
     url(r'^login$', LoginView.as_view(), name='login'),
     url(r'^logout$', LogoutView.as_view(), name='logout'),
 
     url(r'^', include('crop_image.urls')),
-    url(r'^dashboard_utils/', include('dashboard_view.urls')),
+    #url(r'^dashboard_utils/', include('dashboard_view.urls')),
 
     url(r'^main', include('main.urls')),
 
