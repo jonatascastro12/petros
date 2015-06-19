@@ -12,7 +12,7 @@ class MonthBirthdayReport(DashboardReport):
     icon = 'fa-birthday-cake'
 
     def get_queryset(self):
-        objects = self.report.model.accounted.\
+        objects = self.model.accounted.\
             filter(birth_date__month=self.filter_form.cleaned_data.get('month')).\
             all()
         objects = list(objects)
