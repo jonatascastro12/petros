@@ -32,6 +32,7 @@ class PetrosDashboardAdmin(DashboardAdminSite):
 
 dashboard = PetrosDashboardAdmin('dashboard')
 
+
 dashboard.register_report(MonthBirthdayReport)
 
 

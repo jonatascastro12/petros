@@ -193,6 +193,9 @@ class UserProfile(AccountedModel):
     def get_member_function_display(self):
         return self.get_member_function()
 
+    def get_phones(self):
+        return u'%s | %s' % (self.phone1, self.phone2,)
+
     class Meta:
         verbose_name = _("Person")
         verbose_name_plural = _("People")
