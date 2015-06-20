@@ -7,19 +7,22 @@ from dashboard_view.dashboard_widgets import DashboardWidget
 from main.models import UserProfile
 import datetime
 
-class PetrosDashboardWidget(DashboardWidget):
-    def _render_widget_person_month_birthday(self):
+class MonthBirthdayWidget(DashboardWidget):
+    name = 'person_month_birthday'
+    report_view = 'dashboard:report_month_birthday'
+
+    def render(self):
         template_html = get_template('dashboard_widgets/person_month_birthday.html')
         c = Context({
-            'birthday_report_view': '',
-            'ajax_view': 'widget_ajax_call',
-            'widget_name': 'person_month_birthday'
+            'report_view': self.report_view,
+            'ajax_view': self.ajax_view,
+            'widget_name': self.name
         })
         template_js = get_template('dashboard_widgets/person_month_birthday_js.html')
 
         return (template_html.render(c), template_js.render(c), )
 
-    def _action_person_month_birthday(self, request):
+    def run_action(self, request):
         today = datetime.date.today()
         users = UserProfile.accounted.filter(birth_date__month=today.month).all()[:10]
         users_list = []

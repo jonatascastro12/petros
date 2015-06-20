@@ -1,33 +1,18 @@
-from django.conf.global_settings import SHORT_DATE_FORMAT
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse_lazy, reverse
+from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
 from django.utils import formats
 from django.utils.translation import gettext as _
 from django.views.generic.base import View
-from dashboard_view.views import DashboardView, DashboardCreateView, DashboardUpdateView, \
-    DashboardListView, DashboardDetailView, DashboardOverviewView, DashboardProfileView, DashboardReportView
-from main.dashboard_widgets import PetrosDashboardWidget
+from dashboard_view.views import DashboardCreateView, DashboardUpdateView, \
+    DashboardListView, DashboardDetailView, DashboardReportView
 from main.forms import PersonForm_Basic, PersonForm_Personal, PersonForm_Contact, PersonForm, UserForm, \
     UserFormNoPassword, PersonForm_Ecclesiastic, MinuteForm, MonthBirthdayReportForm
 from main.models import UserProfile, Minute
 
 
-class PetrosDashboardOverviewView(DashboardOverviewView):
-    template_name = "dashboard_base.html"
-    widgets_list = [
-        ('person_statistics',),
-        ('last_signups',),
-        ('person_month_birthday',),
-    ]
-    widget_class = PetrosDashboardWidget
-
-DashboardView.widget_class = PetrosDashboardWidget
-
-class PetrosDashboardProfileView(DashboardProfileView):
-    template_name = "dashboard_base.html"
 
 
 class DashboardAccountedView(View):

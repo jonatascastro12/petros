@@ -7,6 +7,7 @@ from django.utils.translation import gettext as _
 from dashboard_view.admin import DashboardAdminSite
 from dashboard_view.dashboard_menu import DashboardMenu
 from main.dashboard_reports import MonthBirthdayReport
+from main.dashboard_widgets import MonthBirthdayWidget
 from main.models import UserProfile, ChurchAccount, Church, ChurchType, Minute, MinuteCategory
 
 menu_dict = [
@@ -34,6 +35,7 @@ dashboard = PetrosDashboardAdmin('dashboard')
 
 
 dashboard.register_report(MonthBirthdayReport)
+dashboard.register_widget(MonthBirthdayWidget)
 
 
 class ChurchAccountAdmin(admin.ModelAdmin):

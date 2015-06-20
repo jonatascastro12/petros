@@ -3,6 +3,9 @@
     <div class="panel panel-green person_month_birthday_widget">
         <div class="panel-heading">
             <i class="fa fa-birthday-cake"></i> {% trans "Month birthday" %} <span class="month"></span>
+            {% if report_view %}
+                <a class="btn btn-xs btn-default pull-right" href="{% url report_view %}">{% trans 'See Report' %}</a>
+            {% endif %}
         </div>
         <div class="panel-body">
             <h2 class="text-center text-muted"><span class="loading glyphicon glyphicon-refresh glyphicon-refresh-animate"></span></h2>
