@@ -93,6 +93,7 @@ class MinuteAdmin(admin.ModelAdmin):
     class Meta:
         model = Minute
 
+
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
 
@@ -102,3 +103,4 @@ admin.site.register(ChurchType, ChurchTypeAdmin)
 
 admin.site.register(MinuteCategory, MinuteCategoryAdmin)
 admin.site.register(Minute, MinuteAdmin)
+

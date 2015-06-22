@@ -2,6 +2,7 @@ from bootstrap3_datetime.widgets import DateTimePicker
 import datetime
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.models import User
+from django.db.models.query_utils import Q
 from django.forms.fields import DateField, CharField, ChoiceField
 from django.forms.forms import Form
 from django.forms.models import ModelForm
@@ -85,13 +86,34 @@ class PersonMultiSelectField(AutoModelSelect2MultipleField):
     queryset = UserProfile.accounted
     search_fields = ['user__first_name__icontains', 'user__last_name__icontains', 'user__username__icontains']
 
+    def prepare_qs_params(self, request, search_term, search_fields):
+        q = None
+        for field in search_fields:
+            kwargs = {}
+            search_term = search_term.strip()
+            if " " in search_term:
+                splitted_terms = search_term.split(" ")
+                for term in splitted_terms:
+                    kwargs[field] = term
+                    if q is None:
+                        q = Q(**kwargs)
+                    else:
+                        q = q | Q(**kwargs)
+            else:
+                kwargs[field] = search_term
+                if q is None:
+                    q = Q(**kwargs)
+                else:
+                    q = q | Q(**kwargs)
+        return {'or': [q], 'and': {}}
+
 
 class GroupForm(ModelForm):
-    users = PersonMultiSelectField()
+    userprofiles = PersonMultiSelectField(label=_('Members'))
 
     class Meta:
         model = Group
-        fields = ['name', 'users']
+        fields = ['name', 'photo', 'place', 'weekday', 'time', 'userprofiles']
 
 
 def get_actual_month():

@@ -6,6 +6,7 @@ from django.core.files.storage import default_storage
 from django.core.urlresolvers import reverse
 from django.core.validators import RegexValidator
 from django.db import models
+from django.utils.dates import WEEKDAYS
 from django.utils.translation import gettext as _
 from localflavor.br.br_states import STATE_CHOICES
 from localflavor.br.models import BRStateField
@@ -13,6 +14,15 @@ from sorl.thumbnail.shortcuts import get_thumbnail
 from tinymce.models import HTMLField
 from crop_image.forms import CropImageModelField
 
+
+class Neighborhood(models.Model):
+    name = models.CharField(max_length=200)
+    city = models.CharField(max_length=200)
+    state = BRStateField()
+    active = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return u"{0}, {1}, {2}".format(self.name, self.city, self.state, )
 
 class ChurchAccount(models.Model):
     name = models.CharField(max_length=255, verbose_name=_('Name'))
@@ -206,20 +216,45 @@ class GroupManager(models.Manager):
     def create_cell(self, args, **kwargs):
         pass
 
+WEEKDAY_CHOICES = (
+    ('0', _('Monday')),
+    ('1', _('Tuesday')),
+    ('2', _('Wednesday')),
+    ('3', _('Thursday')),
+    ('4', _('Friday')),
+    ('5', _('Saturday')),
+    ('6', _('Sunday')),
+)
+
+
 class Group(AccountedModel):
     name = models.CharField(max_length=200)
-    type = models.CharField(max_length=100, choices=(
-        ('C', _('Cell')),
-        ('D', _('Department')),
-        ('M', _('Ministry')),
+    type = models.CharField(max_length=20, choices=(
+        ('cell', _('Cell')),
+        ('department', _('Department')),
+        ('ministry', _('Ministry')),
     ))
-    users = models.ManyToManyField(User, blank=True)
+    userprofiles = models.ManyToManyField(UserProfile, blank=True)
+
+    place = models.CharField(blank=True, null=True, max_length=200)
+
+    neighborhood = models.ForeignKey(Neighborhood, blank=True, null=True, )
+
+    weekday = models.CharField(max_length=1, blank=True, null=True, choices=WEEKDAY_CHOICES)
+    time = models.TimeField(blank=True, null=True)
+
+    photo = CropImageModelField(upload_to='group_photos', blank=True, null=True)
 
     manager = GroupManager()
 
     def __unicode__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('main_%s_detail' % self.type, kwargs={'pk': self.pk})
+
+    def get_number_of_people(self):
+        self.userprofiles.count()
 
 class MinuteCategory(models.Model):
     title = models.CharField(max_length=255)

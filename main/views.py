@@ -15,8 +15,8 @@ from main.models import UserProfile, Minute, Group
 
 class DashboardAccountedView(View):
     def form_valid(self, *args, **kwargs):
-        if kwargs['form']:
-            print 'ok'
+        if args[0]:
+            args[0].instance.church_account_id = self.request.user.userprofile.church_account_id
         return super(DashboardAccountedView, self).form_valid(*args, **kwargs)
     
     def get_queryset(self):
@@ -240,7 +240,7 @@ class GroupView(ContextMixin):
             context['page_name'] = model_name.title() + u' <small>' + self.object.__unicode__() + \
                                u' <span class="label label-warning">' + _('Editing') + u'</span></small> '
         elif self.template_name_suffix == '_detail':
-            context['page_name'] = model_name.verbose_name.title() + u' <small>' + self.object.__unicode__() + \
+            context['page_name'] = model_name.title() + u' <small>' + self.object.__unicode__() + \
                                    u'</small>'
 
         elif self.template_name_suffix == '_form':
@@ -251,21 +251,37 @@ class GroupView(ContextMixin):
         return context
 
 
-class GroupCreateView(DashboardCreateView, GroupView):
+
+class GroupCreateView(DashboardAccountedView, DashboardCreateView, GroupView):
     model = Group
     group_type = None
     form_class = GroupForm
 
+    def get_success_url(self):
+        return reverse('main_%s_edit' % self.group_type, kwargs={'pk': self.object.id})
 
-class GroupListView(DashboardListView, GroupView):
+class GroupListView(DashboardListView, DashboardAccountedView, GroupView):
     model = Group
     group_type = None
     fields = ['name']
 
-class GroupDetailView(DashboardDetailView, GroupView):
+    def form_valid(self, *args, **kwargs):
+        if args[0]:
+            args[0].instance.type = self.group_type
+        return super(DashboardAccountedView, self).form_valid(*args, **kwargs)
+
+
+
+class GroupDetailView(DashboardDetailView, DashboardAccountedView, GroupView):
     model = Group
     group_type = None
 
-class GroupUpdateView(DashboardUpdateView, GroupView):
+class GroupUpdateView(DashboardUpdateView, DashboardAccountedView, GroupView):
     model = Group
     group_type = None
+    form_class = GroupForm
+
+    def form_valid(self, *args, **kwargs):
+        if args[0]:
+            args[0].instance.type = self.group_type
+        return super(GroupUpdateView, self).    form_valid(*args, **kwargs)
