@@ -38,6 +38,8 @@ urlpatterns = [
 
     url(r'^tinymce/', include('tinymce.urls')),
 
+    url(r'^select2/', include('django_select2.urls')),
+
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

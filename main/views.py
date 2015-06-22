@@ -4,19 +4,16 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
 from django.utils import formats
-from django.utils.translation import gettext as _
-from django.views.generic.base import View
+from django.utils.translation import gettext as _, pgettext
+from django.views.generic.base import View, ContextMixin
 from dashboard_view.views import DashboardCreateView, DashboardUpdateView, \
     DashboardListView, DashboardDetailView, DashboardReportView
 from main.forms import PersonForm_Basic, PersonForm_Personal, PersonForm_Contact, PersonForm, UserForm, \
-    UserFormNoPassword, PersonForm_Ecclesiastic, MinuteForm, MonthBirthdayReportForm
-from main.models import UserProfile, Minute
-
-
+    UserFormNoPassword, PersonForm_Ecclesiastic, MinuteForm, MonthBirthdayReportForm, GroupForm
+from main.models import UserProfile, Minute, Group
 
 
 class DashboardAccountedView(View):
-    
     def form_valid(self, *args, **kwargs):
         if kwargs['form']:
             print 'ok'
@@ -28,7 +25,6 @@ class DashboardAccountedView(View):
         if (hasattr(queryset.model, 'accounted')):
             if hasattr(self.request.user,'userprofile'):
                 queryset = queryset.filter(church_account=self.request.user.userprofile.church_account)
-
         return queryset
 
 
@@ -39,7 +35,7 @@ class PersonCreateView(DashboardCreateView):
     def get_success_url(self):
         return reverse('main_person_edit', kwargs={'pk': self.object.id})
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request,  *args, **kwargs):
         self.object = None
 
         form = self.get_form()
@@ -222,3 +218,54 @@ class MonthBirthdayReportView(DashboardReportView):
         return self.render_to_response(context=self.get_context_data(form=form, objects=objects))
 
 
+class GroupView(ContextMixin):
+    def get_context_data(self, **kwargs):
+        context = super(GroupView, self).get_context_data(**kwargs)
+
+        if self.group_type == 'cell':
+            model_name = _('Cell')
+            model_plural_name = _('Cells')
+        elif self.group_type == 'department':
+            model_name = _('Department')
+            model_plural_name = _('Departments')
+        elif self.group_type == 'ministry':
+            model_name = _('Ministry')
+            model_plural_name = _('Ministries')
+
+        new_title = (pgettext('female', 'New') if hasattr(self.model._meta,
+                                                              'gender') and self.model._meta.gender == 'F' else \
+                             pgettext('male', 'New')) + u' ' + model_name.title()
+
+        if self.template_name_suffix == '_form' and self.object:
+            context['page_name'] = model_name.title() + u' <small>' + self.object.__unicode__() + \
+                               u' <span class="label label-warning">' + _('Editing') + u'</span></small> '
+        elif self.template_name_suffix == '_detail':
+            context['page_name'] = model_name.verbose_name.title() + u' <small>' + self.object.__unicode__() + \
+                                   u'</small>'
+
+        elif self.template_name_suffix == '_form':
+            context['page_name'] = new_title
+        else:
+            context['page_name'] = model_plural_name.title()
+
+        return context
+
+
+class GroupCreateView(DashboardCreateView, GroupView):
+    model = Group
+    group_type = None
+    form_class = GroupForm
+
+
+class GroupListView(DashboardListView, GroupView):
+    model = Group
+    group_type = None
+    fields = ['name']
+
+class GroupDetailView(DashboardDetailView, GroupView):
+    model = Group
+    group_type = None
+
+class GroupUpdateView(DashboardUpdateView, GroupView):
+    model = Group
+    group_type = None

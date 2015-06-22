@@ -7,9 +7,10 @@ from django.forms.forms import Form
 from django.forms.models import ModelForm
 from django.utils.dates import MONTHS
 from django.utils.translation import gettext as _
+from django_select2.fields import AutoSelect2MultipleField, AutoModelSelect2MultipleField
 from input_mask.contrib.localflavor.br.widgets import BRCPFInput, BRZipCodeInput, BRPhoneNumberInput
 from localflavor.br.forms import BRCPFField, BRZipCodeField, BRPhoneNumberField
-from main.models import UserProfile, Minute
+from main.models import UserProfile, Minute, Group
 
 
 class PersonForm(ModelForm):
@@ -77,6 +78,20 @@ class MinuteForm(ModelForm):
     class Meta:
         model = Minute
         fields = ['title', 'date', 'category', 'content', ]
+
+
+
+class PersonMultiSelectField(AutoModelSelect2MultipleField):
+    queryset = UserProfile.accounted
+    search_fields = ['user__first_name__icontains', 'user__last_name__icontains', 'user__username__icontains']
+
+
+class GroupForm(ModelForm):
+    users = PersonMultiSelectField()
+
+    class Meta:
+        model = Group
+        fields = ['name', 'users']
 
 
 def get_actual_month():

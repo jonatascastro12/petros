@@ -13,12 +13,21 @@ from main.models import UserProfile, ChurchAccount, Church, ChurchType, Minute, 
 menu_dict = [
     {'name': 'overview', 'icon_class': 'fa-dashboard', 'verbose_name': _('Overview'),
      'link': reverse_lazy('dashboard:index')},
+    {'name': 'system', 'icon_class': 'fa-gear', 'verbose_name': _('Settings'), 'children':
+        [
+            {'name': 'settings', 'verbose_name': _('General Settings'), 'link': '#', 'icon_class': 'fa-wrench'},
+            {'name': 'account', 'verbose_name': _('Account'), 'link': '#', 'icon_class': 'fa-gears'},
+            {'name': 'team', 'verbose_name': _('Team'), 'link': '#', 'icon_class': 'fa-key'}
+        ]
+     },
     {'name': 'main', 'icon_class': 'fa-users', 'verbose_name': _('People'), 'children':
         [
             {'name': 'person', 'verbose_name': _('Person'), 'link': reverse_lazy('main_person'),
              'icon_class': 'fa-user', },
             {'name': 'minutes', 'verbose_name': _('Minutes'), 'link': reverse_lazy('main_minute'),
              'icon_class': 'fa-file-text-o', },
+            {'name': 'cells', 'verbose_name': _('Cells'), 'link': reverse_lazy('main_cell'),
+             'icon_class': 'fa-users', },
     ]},
 
 ]

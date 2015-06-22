@@ -46,6 +46,7 @@ INSTALLED_APPS = (
     'input_mask',
     'bootstrap3_datetime',
     'tinymce',
+    'django_select2',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -128,3 +129,5 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
     os.path.join(BASE_DIR, 'dashboard_view/static'),
 )
+
+SELECT2_BOOTSTRAP = True

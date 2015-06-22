@@ -217,6 +217,9 @@ class Group(AccountedModel):
 
     manager = GroupManager()
 
+    def __unicode__(self):
+        return self.name
+
 
 class MinuteCategory(models.Model):
     title = models.CharField(max_length=255)
