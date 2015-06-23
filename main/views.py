@@ -3,14 +3,14 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
-from django.utils import formats
+from django.utils import formats, translation
 from django.utils.translation import gettext as _, pgettext
 from django.views.generic.base import View, ContextMixin
 from dashboard_view.views import DashboardCreateView, DashboardUpdateView, \
     DashboardListView, DashboardDetailView, DashboardReportView
 from main.forms import PersonForm_Basic, PersonForm_Personal, PersonForm_Contact, PersonForm, UserForm, \
     UserFormNoPassword, PersonForm_Ecclesiastic, MinuteForm, MonthBirthdayReportForm, GroupForm
-from main.models import UserProfile, Minute, Group
+from main.models import UserProfile, Minute, Group, UserPreferences
 
 
 class DashboardAccountedView(View):
@@ -168,8 +168,8 @@ class PersonListView(DashboardListView, DashboardAccountedView):
 
 class PersonDetailView(DashboardDetailView):
     model = UserProfile
-    
-    
+
+
 class MinuteCreateView(DashboardCreateView, DashboardAccountedView):
     model = Minute
     form_class = MinuteForm
@@ -285,3 +285,27 @@ class GroupUpdateView(DashboardUpdateView, DashboardAccountedView, GroupView):
         if args[0]:
             args[0].instance.type = self.group_type
         return super(GroupUpdateView, self).    form_valid(*args, **kwargs)
+
+class UserPreferencesView(DashboardUpdateView):
+    model = UserPreferences
+    fields = ['language', ]
+
+    def get_absolute_url(self):
+        return reverse('dashboard:user_preferences')
+
+    def form_valid(self, form):
+        user_language = form.cleaned_data['language']
+        translation.activate(user_language)
+        self.request.session[translation.LANGUAGE_SESSION_KEY] = user_language
+
+        return super(UserPreferencesView, self).form_valid(form)
+
+    def get_object(self, queryset=None):
+        user = self.request.user
+        try:
+            preferences = user.preferences
+            return preferences
+        except:
+            UserPreferences.objects.create(user=user)
+            return user.preferences
+

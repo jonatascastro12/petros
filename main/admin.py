@@ -1,3 +1,4 @@
+from django.conf.urls import url
 from django.contrib import admin
 # Register your models here.
 from django.contrib.auth.admin import UserAdmin
@@ -6,9 +7,12 @@ from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import gettext as _
 from dashboard_view.admin import DashboardAdminSite
 from dashboard_view.dashboard_menu import DashboardMenu
+from dashboard_view.views import DashboardFormView, DashboardUpdateView
 from main.dashboard_reports import MonthBirthdayReport
 from main.dashboard_widgets import MonthBirthdayWidget
+from main.forms import UserPreferencesForm
 from main.models import UserProfile, ChurchAccount, Church, ChurchType, Minute, MinuteCategory
+from main.views import UserPreferencesView
 
 menu_dict = [
     {'name': 'overview', 'icon_class': 'fa-dashboard', 'verbose_name': _('Overview'),
@@ -39,6 +43,15 @@ class PetrosDashboardAdmin(DashboardAdminSite):
     site_title = _('Petros Dashboard')
     menu = menu
 
+    def get_urls(self):
+        urlpatterns = super(PetrosDashboardAdmin, self).get_urls()
+        
+        urlpatterns += [
+            url(r'^user_profile$', self.get_widget_ajax_call, name="user_profile"),
+            url(r'^user_preferences$', UserPreferencesView.as_view(admin_site=self), name="user_preferences"),
+        ]
+
+        return urlpatterns
 
 dashboard = PetrosDashboardAdmin('dashboard')
 

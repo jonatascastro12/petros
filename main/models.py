@@ -24,6 +24,8 @@ class Neighborhood(models.Model):
     def __unicode__(self):
         return u"{0}, {1}, {2}".format(self.name, self.city, self.state, )
 
+
+
 class ChurchAccount(models.Model):
     name = models.CharField(max_length=255, verbose_name=_('Name'))
     cnpj = models.CharField(max_length=20, verbose_name='CNPJ', blank=True)
@@ -43,6 +45,9 @@ class ChurchAccount(models.Model):
 
     class Meta:
         verbose_name = _("Church Account")
+
+class ChuchAccountSettings(models.Model):
+    account = models.OneToOneField(ChurchAccount)
 
 
 class AccountedManager(models.Manager):
@@ -108,6 +113,21 @@ class MemberFunction(AccountedModel):
         verbose_name = 'Função de membro'
         verbose_name_plural = 'Funções de membro'
 
+class UserPreferences(models.Model):
+    language = models.CharField(max_length=10, choices=(
+        ('pt-br', 'Português'),
+        ('en-us', 'English'),
+    ), default='pt-br')
+    user = models.OneToOneField(User, related_name='preferences')
+
+    def __unicode__(self):
+        return "%s's preferences" % self.user.get_short_name()
+
+    def get_absolute_url(self):
+        return reverse('dashboard:user_preferences')
+
+    class Meta:
+        verbose_name = _('User Preference')
 
 class UserProfile(AccountedModel):
     SITUATION_CHOICES = [('A', _('Active')), ('I', _('Inactive'))]

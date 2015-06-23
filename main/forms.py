@@ -11,7 +11,7 @@ from django.utils.translation import gettext as _
 from django_select2.fields import AutoSelect2MultipleField, AutoModelSelect2MultipleField
 from input_mask.contrib.localflavor.br.widgets import BRCPFInput, BRZipCodeInput, BRPhoneNumberInput
 from localflavor.br.forms import BRCPFField, BRZipCodeField, BRPhoneNumberField
-from main.models import UserProfile, Minute, Group
+from main.models import UserProfile, Minute, Group, UserPreferences
 
 
 class PersonForm(ModelForm):
@@ -137,3 +137,9 @@ class MonthBirthdayReportForm(Form):
     )
 
     month = ChoiceField(choices=month_choices, initial=get_actual_month(), label=_('Month'), )
+
+
+class UserPreferencesForm(ModelForm):
+    class Meta:
+        model = UserPreferences
+        exclude = []
