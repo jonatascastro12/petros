@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
 from django.utils import formats, translation
-from django.utils.translation import gettext as _, pgettext
+from django.utils.translation import ugettext as _, pgettext
 from django.views.generic.base import View, ContextMixin
 from dashboard_view.views import DashboardCreateView, DashboardUpdateView, \
     DashboardListView, DashboardDetailView, DashboardReportView

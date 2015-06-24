@@ -3,12 +3,11 @@ import datetime
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.models import User
 from django.db.models.query_utils import Q
-from django.forms.fields import DateField, CharField, ChoiceField
+from django.forms.fields import DateField, ChoiceField
 from django.forms.forms import Form
 from django.forms.models import ModelForm
-from django.utils.dates import MONTHS
-from django.utils.translation import gettext as _
-from django_select2.fields import AutoSelect2MultipleField, AutoModelSelect2MultipleField
+from django.utils.translation import ugettext as _
+from django_select2.fields import AutoModelSelect2MultipleField
 from input_mask.contrib.localflavor.br.widgets import BRCPFInput, BRZipCodeInput, BRPhoneNumberInput
 from localflavor.br.forms import BRCPFField, BRZipCodeField, BRPhoneNumberField
 from main.models import UserProfile, Minute, Group, UserPreferences

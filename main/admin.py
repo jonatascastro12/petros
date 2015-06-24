@@ -4,13 +4,11 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse_lazy
-from django.utils.translation import gettext as _
+from django.utils.translation import ugettext as _
 from dashboard_view.admin import DashboardAdminSite
 from dashboard_view.dashboard_menu import DashboardMenu
-from dashboard_view.views import DashboardFormView, DashboardUpdateView
 from main.dashboard_reports import MonthBirthdayReport
 from main.dashboard_widgets import MonthBirthdayWidget
-from main.forms import UserPreferencesForm
 from main.models import UserProfile, ChurchAccount, Church, ChurchType, Minute, MinuteCategory
 from main.views import UserPreferencesView
 

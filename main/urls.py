@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, url, include
-from django.utils.translation import gettext as _
+from django.utils.translation import ugettext as _
 from main.admin import dashboard
 from main.views import PersonCreateView, PersonListView, PersonDetailView, PersonUpdateView, MinuteListView, \
     MinuteCreateView, MinuteUpdateView, MinuteDetailView, MonthBirthdayReportView, GroupCreateView, GroupListView, \

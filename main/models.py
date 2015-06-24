@@ -6,8 +6,7 @@ from django.core.files.storage import default_storage
 from django.core.urlresolvers import reverse
 from django.core.validators import RegexValidator
 from django.db import models
-from django.utils.dates import WEEKDAYS
-from django.utils.translation import gettext as _
+from django.utils.translation import ugettext as _
 from localflavor.br.br_states import STATE_CHOICES
 from localflavor.br.models import BRStateField
 from sorl.thumbnail.shortcuts import get_thumbnail
@@ -116,8 +115,8 @@ class MemberFunction(AccountedModel):
 class UserPreferences(models.Model):
     language = models.CharField(max_length=10, choices=(
         ('pt-br', 'Português'),
-        ('en-us', 'English'),
-    ), default='pt-br')
+        ('en', 'English'),
+    ), default='pt-br', verbose_name=_('Language'))
     user = models.OneToOneField(User, related_name='preferences')
 
     def __unicode__(self):
